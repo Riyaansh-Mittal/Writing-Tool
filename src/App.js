@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import Block from "./components/Block";
@@ -40,8 +40,73 @@ function App() {
     dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
   };
 
+  const [draggedIndex, setDraggedIndex] = useState(null);
+
+
+  const onTouchStart = (e, index) => {
+    if(draggedIndex === null){setDraggedIndex(index)}
+    else{
+
+      const itemBeingDragged = blocks[draggedIndex];
+    const replacedBlock = blocks[index];
+    const newBlocks = [...blocks];
+    console.log(newBlocks)
+    newBlocks.splice(draggedIndex, 1);
+    newBlocks.splice(index, 0, itemBeingDragged); 
+    newBlocks.splice(index-draggedIndex > 0 ? index-1 : index+1, 1);
+    newBlocks.splice(draggedIndex, 0, replacedBlock);
+    console.log(newBlocks)
+    setDraggedIndex(null)
+    dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
+  }
+  };
+  
+  // const onTouchEnd = (e, dropIndex) => {
+  //   clearTimeout(touchStartTimer); // Clear the timeout to prevent setting draggedIndex if it was a tap
+  //   setTouchStartTimer(null);
+  //   console.log(dropIndex)
+  //   console.log(draggedIndex)
+  //   if (draggedIndex === null || draggedIndex === dropIndex) return;
+  //   console.log(draggedIndex)
+  //   setDraggedIndex(dropIndex); // Reset the dragged index
+  //   const itemBeingDragged = blocks[draggedIndex];
+  //   const replacedBlock = blocks[dropIndex];
+  //   const newBlocks = [...blocks];
+  //   console.log(newBlocks)
+  //   newBlocks.splice(draggedIndex, 1);
+  //   newBlocks.splice(dropIndex, 0, itemBeingDragged); 
+  //   newBlocks.splice(dropIndex-draggedIndex > 0 ? dropIndex-1 : dropIndex+1, 1);
+  //   newBlocks.splice(draggedIndex, 0, replacedBlock);
+  //   console.log(newBlocks)
+  //   dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
+  // };
+
+  const blocksContainerRef = useRef(null);
+
+  useEffect(() => {
+    // Directly attach the onTouchMove event listener to the blocks container
+    const blocksContainer = blocksContainerRef.current;
+    const touchMoveHandler = (event) => {
+      // Prevent the default touch behavior
+      event.preventDefault();
+    };
+
+    if (blocksContainer) {
+      blocksContainer.addEventListener("touchmove", touchMoveHandler, { passive: false });
+    }
+
+    // Make sure to remove the event listener on cleanup
+    return () => {
+      if (blocksContainer) {
+        blocksContainer.removeEventListener("touchmove", touchMoveHandler);
+      }
+    };
+  }, []); // Empty dependency array ensures this effect runs only once on mount
+
+  
+
   return (
-    <div style={{ margin: "20px" }} className="app-container">
+    <div ref={blocksContainerRef} style={{ margin: "20px" }} className="app-container">
       <Button type="primary" style={{left: "50%"}} onClick={showModal}>
         Add Block
       </Button>
@@ -69,6 +134,7 @@ function App() {
             onDragOver={onDragOver}
             onDragStart = {(e) => {onDragStart(e, index)}}
             onDrop={(e) => {onDrop(e, index);}}
+            onTouchStart={(e) => onTouchStart(e, index)}
           />
         ))}
       </div>

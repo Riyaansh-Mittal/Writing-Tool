@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Card, Button, Input } from "antd";
 import { useDispatch } from "react-redux";
 
-function Block({ index, block, onDragOver, onDragStart, onDrop }) {
+function Block({
+  index,
+  block,
+  onDragOver,
+  onDragStart,
+  onDrop,
+  onTouchStart
+}) {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [isImageEditing, setIsImageEditing] = useState(false);
@@ -13,7 +20,10 @@ function Block({ index, block, onDragOver, onDragStart, onDrop }) {
 
   const removeBlock = () => dispatch({ type: "REMOVE_BLOCK", payload: index });
 
-  const toggleEdit = () => setIsEditing(!isEditing);
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+    setContent(block.content);
+  };
   const toggleImageEdit = () => setIsImageEditing(!isImageEditing);
 
   useEffect(() => {
@@ -55,6 +65,7 @@ function Block({ index, block, onDragOver, onDragStart, onDrop }) {
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onTouchStart={onTouchStart}
       style={{ width: "600px", cursor: "move", marginBottom: "10px" }}
     >
       <Card
@@ -83,7 +94,7 @@ function Block({ index, block, onDragOver, onDragStart, onDrop }) {
                 onMouseMove={toggleEdit}
                 style={{ fontFamily: "Times New Roman", fontSize: "12px" }}
               >
-                {block.content || "Double-click to edit text"}
+                {block.content || "Click to edit text"}
               </div>
             ) : (
               <textarea
@@ -102,7 +113,7 @@ function Block({ index, block, onDragOver, onDragStart, onDrop }) {
               onMouseMove={toggleEdit}
               style={{ fontFamily: "Times New Roman", fontSize: "12px" }}
             >
-              {block.content || "Double-click to edit text"}
+              {block.content || "Click to edit text"}
             </div>
           ) : (
             <textarea
