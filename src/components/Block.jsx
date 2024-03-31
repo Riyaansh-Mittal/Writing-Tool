@@ -13,7 +13,7 @@ function Block({
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [isImageEditing, setIsImageEditing] = useState(false);
-  const [content, setContent] = useState(block.content);
+  const [content, setContent] = useState(block.content || "");
   const [imageContent, setImageContent] = useState(block.imageContent);
   const [showChangeImageButton, setShowChangeImageButton] = useState(true);
   const [wordCount, setWordCount] = useState(0);
@@ -97,7 +97,7 @@ function Block({
               </div>
             ) : (
               <textarea
-                style={{ maxWidth: "580px", width: "580px" }}
+                style={{ maxWidth: "580px", width: "280px" }}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={4}

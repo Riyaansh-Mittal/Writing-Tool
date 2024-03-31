@@ -54,12 +54,10 @@ function App() {
       const itemBeingDragged = blocks[draggedIndex];
       const replacedBlock = blocks[index];
       const newBlocks = [...blocks];
-      console.log(newBlocks);
       newBlocks.splice(draggedIndex, 1);
       newBlocks.splice(index, 0, itemBeingDragged);
       newBlocks.splice(index - draggedIndex > 0 ? index - 1 : index + 1, 1);
       newBlocks.splice(draggedIndex, 0, replacedBlock);
-      console.log(newBlocks);
       setDraggedIndex(null);
       dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
     }
@@ -113,7 +111,7 @@ function App() {
         className="blocks-container"
         style={{
           gap: "30px",
-          paddingLeft: "25px",
+          paddingLeft: "35px",
           display: "flex",
           flexWrap: "wrap",
           gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
