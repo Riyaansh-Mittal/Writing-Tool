@@ -12,7 +12,10 @@ function App() {
   const showModal = () => setIsModalVisible(true);
 
   const handleOk = () => {
-    dispatch({ type: "ADD_BLOCK", payload: { type: blockType, content: "" , imageContent: "" } });
+    dispatch({
+      type: "ADD_BLOCK",
+      payload: { type: blockType, content: "", imageContent: "" },
+    });
     setIsModalVisible(false);
   };
 
@@ -25,7 +28,6 @@ function App() {
     e.dataTransfer.setData("dragIndex", index);
   };
 
-
   const onDrop = (e, dropIndex) => {
     const dragIndex = e.dataTransfer.getData("dragIndex");
     if (dragIndex === dropIndex.toString()) return;
@@ -34,80 +36,62 @@ function App() {
     const replacedBlock = blocks[dropIndex];
     const newBlocks = [...blocks];
     newBlocks.splice(dragIndex, 1);
-    newBlocks.splice(dropIndex, 0, itemBeingDragged); 
-    newBlocks.splice(dropIndex-dragIndex > 0 ? dropIndex-1 : dropIndex+1, 1);
+    newBlocks.splice(dropIndex, 0, itemBeingDragged);
+    newBlocks.splice(
+      dropIndex - dragIndex > 0 ? dropIndex - 1 : dropIndex + 1,
+      1
+    );
     newBlocks.splice(dragIndex, 0, replacedBlock);
     dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
   };
 
   const [draggedIndex, setDraggedIndex] = useState(null);
 
-
   const onTouchStart = (e, index) => {
-    if(draggedIndex === null){setDraggedIndex(index)}
-    else{
-
+    if (draggedIndex === null) {
+      setDraggedIndex(index);
+    } else {
       const itemBeingDragged = blocks[draggedIndex];
-    const replacedBlock = blocks[index];
-    const newBlocks = [...blocks];
-    console.log(newBlocks)
-    newBlocks.splice(draggedIndex, 1);
-    newBlocks.splice(index, 0, itemBeingDragged); 
-    newBlocks.splice(index-draggedIndex > 0 ? index-1 : index+1, 1);
-    newBlocks.splice(draggedIndex, 0, replacedBlock);
-    console.log(newBlocks)
-    setDraggedIndex(null)
-    dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
-  }
+      const replacedBlock = blocks[index];
+      const newBlocks = [...blocks];
+      console.log(newBlocks);
+      newBlocks.splice(draggedIndex, 1);
+      newBlocks.splice(index, 0, itemBeingDragged);
+      newBlocks.splice(index - draggedIndex > 0 ? index - 1 : index + 1, 1);
+      newBlocks.splice(draggedIndex, 0, replacedBlock);
+      console.log(newBlocks);
+      setDraggedIndex(null);
+      dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
+    }
   };
-  
-  // const onTouchEnd = (e, dropIndex) => {
-  //   clearTimeout(touchStartTimer); // Clear the timeout to prevent setting draggedIndex if it was a tap
-  //   setTouchStartTimer(null);
-  //   console.log(dropIndex)
-  //   console.log(draggedIndex)
-  //   if (draggedIndex === null || draggedIndex === dropIndex) return;
-  //   console.log(draggedIndex)
-  //   setDraggedIndex(dropIndex); // Reset the dragged index
-  //   const itemBeingDragged = blocks[draggedIndex];
-  //   const replacedBlock = blocks[dropIndex];
-  //   const newBlocks = [...blocks];
-  //   console.log(newBlocks)
-  //   newBlocks.splice(draggedIndex, 1);
-  //   newBlocks.splice(dropIndex, 0, itemBeingDragged); 
-  //   newBlocks.splice(dropIndex-draggedIndex > 0 ? dropIndex-1 : dropIndex+1, 1);
-  //   newBlocks.splice(draggedIndex, 0, replacedBlock);
-  //   console.log(newBlocks)
-  //   dispatch({ type: "UPDATE_BLOCKS_ORDER", payload: newBlocks });
-  // };
 
   const blocksContainerRef = useRef(null);
 
   useEffect(() => {
-    // Directly attach the onTouchMove event listener to the blocks container
     const blocksContainer = blocksContainerRef.current;
     const touchMoveHandler = (event) => {
-      // Prevent the default touch behavior
       event.preventDefault();
     };
 
     if (blocksContainer) {
-      blocksContainer.addEventListener("touchmove", touchMoveHandler, { passive: false });
+      blocksContainer.addEventListener("touchmove", touchMoveHandler, {
+        passive: false,
+      });
     }
-
-    // Make sure to remove the event listener on cleanup
     return () => {
       if (blocksContainer) {
         blocksContainer.removeEventListener("touchmove", touchMoveHandler);
       }
     };
-  }, []); // Empty dependency array ensures this effect runs only once on mount
-
-  
+  }, []);
 
   return (
-    <div ref={blocksContainerRef} style={{ margin: "20px" }} className="app-container">
-      <Button type="primary" style={{left: "50%"}} onClick={showModal}>
+    <div
+      ref={blocksContainerRef}
+      style={{ margin: "20px" }}
+      className="app-container"
+    >
+      <Button type="primary" style={{ left: "50%" }} onClick={showModal}>
         Add Block
       </Button>
       <Modal
@@ -125,15 +109,28 @@ function App() {
           <Select.Option value="picture">Picture</Select.Option>
         </Select>
       </Modal>
-      <div className="blocks-container">
+      <div
+        className="blocks-container"
+        style={{
+          gap: "30px",
+          paddingLeft: "25px",
+          display: "flex",
+          flexWrap: "wrap",
+          gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+        }}
+      >
         {blocks.map((block, index) => (
           <Block
             key={index}
             index={index}
             block={block}
             onDragOver={onDragOver}
-            onDragStart = {(e) => {onDragStart(e, index)}}
-            onDrop={(e) => {onDrop(e, index);}}
+            onDragStart={(e) => {
+              onDragStart(e, index);
+            }}
+            onDrop={(e) => {
+              onDrop(e, index);
+            }}
             onTouchStart={(e) => onTouchStart(e, index)}
           />
         ))}

@@ -8,7 +8,7 @@ function Block({
   onDragOver,
   onDragStart,
   onDrop,
-  onTouchStart
+  onTouchStart,
 }) {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
@@ -75,7 +75,6 @@ function Block({
             block.type === "picture"
               ? `url(${block.imageContent}) center/cover no-repeat`
               : "",
-          minWidth: "600px",
           minHeight: "260px",
           display: "flex",
           justifyContent: "center",
