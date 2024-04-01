@@ -19,6 +19,11 @@ function Block({
   const [wordCount, setWordCount] = useState(0);
 
   const removeBlock = () => dispatch({ type: "REMOVE_BLOCK", payload: index });
+  const editBold = () => dispatch({ type: "BOLD", payload: {index, bold: !block.bold} })
+  const editItalics = () => dispatch({ type: "ITALICS", payload: {index, italics: !block.italics} });
+  const editUnderline = () => dispatch({ type: "UNDERLINE", payload: {index, underline: !block.underline} });
+
+  console.log(block)
 
   const toggleEdit = () => {
     setIsEditing(!isEditing);
@@ -91,7 +96,7 @@ function Block({
             !isEditing ? (
               <div
                 onMouseMove={toggleEdit}
-                style={{ fontFamily: "Times New Roman", fontSize: "12px" }}
+                style={{ fontFamily: "Times New Roman", fontSize: "12px", fontWeight: block.bold?'bold':'normal', fontStyle: block.italics?'italic':'normal', textDecoration: block.underline?'underline':'normal'}}
               >
                 {block.content || "Click to edit text"}
               </div>
@@ -116,7 +121,7 @@ function Block({
             </div>
           ) : (
             <textarea
-              style={{ maxWidth: "580px", width: "580px" }}
+              style={{ maxWidth: "580px", width: "280px" }}
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={4}
@@ -134,6 +139,9 @@ function Block({
               <Button onClick={toggleEdit} style={{ marginLeft: "5px" }}>
                 Cancel
               </Button>
+              <Button onClick={editBold} style={{backgroundColor: block.bold?'blue':'white', color: block.bold?'white':'black'}}>Bold</Button>
+              <Button onClick={editUnderline} style={{backgroundColor: block.underline?'blue':'white', color: block.underline?'white':'black'}}>Underline</Button>
+              <Button onClick={editItalics} style={{backgroundColor: block.italics?'blue':'white', color: block.italics?'white':'black'}}>Italics</Button>
             </div>
           )}
         </div>

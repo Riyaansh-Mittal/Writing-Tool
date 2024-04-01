@@ -14,7 +14,7 @@ function App() {
   const handleOk = () => {
     dispatch({
       type: "ADD_BLOCK",
-      payload: { type: blockType, content: "", imageContent: "" },
+      payload: { type: blockType, content: "", imageContent: "", bold: false, underline: false, italics: false},
     });
     setIsModalVisible(false);
   };

@@ -32,11 +32,39 @@ function blocksReducer(state = initialState, action) {
             : block
         ),
       };
-      case "UPDATE_BLOCKS_ORDER":
-        return {
-          ...state,
-          blocks: action.payload,
-        };
+    case "BOLD":
+      // Assuming you want to toggle the bold state for a specific block
+      return {
+        ...state,
+        blocks: state.blocks.map((block, index) =>
+          index === action.payload.index
+            ? { ...block, bold: action.payload.bold }
+            : block
+        ),
+      };
+    case "ITALICS":
+      return {
+        ...state,
+        blocks: state.blocks.map((block, index) =>
+          index === action.payload.index
+            ? { ...block, italics: action.payload.italics }
+            : block
+        ),
+      };
+    case "UNDERLINE":
+      return {
+        ...state,
+        blocks: state.blocks.map((block, index) =>
+          index === action.payload.index
+            ? { ...block, underline: action.payload.underline }
+            : block
+        ),
+      };
+    case "UPDATE_BLOCKS_ORDER":
+      return {
+        ...state,
+        blocks: action.payload,
+      };
     default:
       return state;
   }
